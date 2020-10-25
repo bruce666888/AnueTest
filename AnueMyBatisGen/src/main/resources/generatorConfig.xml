@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+<!-- 指定連線資料庫時所需要的JDBC driver的檔案位置 -->
+	<classPathEntry	location="E:/javaResources/mySqlJDBCJar/mysql-connector-java-8.0.13/mysql-connector-java-8.0.13.jar" />
+	<context id="mySqlTables" targetRuntime="MyBatis3">
+    
+	 <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin" />
+
+     <commentGenerator>
+         <property name="suppressAllComments" value="true"/>
+     </commentGenerator>
+
+        
+<!-- 資料庫連線設定 -->
+		<jdbcConnection
+			driverClass="com.mysql.cj.jdbc.Driver"
+			connectionURL="jdbc:mysql://192.168.1.168:3306/anueTest_schema?characterEncoding=utf-8&amp;useSSL=false"
+			userId="root" password="123456" />
+            
+<!-- 要產生的model位置，targetProject的值為專案的Source folder -->
+		<javaModelGenerator	targetPackage="com.anue.pojo"	targetProject="src/main/java">
+			<property name="enableSubPackages" value="false" />
+			<property name="trimStrings" value="true" />
+		</javaModelGenerator>
+        
+<!-- 要產生的MyBatis Mapper位置 --> 
+		<sqlMapGenerator targetPackage="com.anue.mapper"	targetProject="src/main/java">
+			<property name="enableSubPackages" value="false" />
+		</sqlMapGenerator>
+        
+<!-- 要產生的MyBatis Dao位置 --> 
+		<javaClientGenerator targetPackage="com.anue.mapper"	targetProject="src/main/java" type="XMLMAPPER">
+			<property name="enableSubPackages" value="false" />
+		</javaClientGenerator>
+		
+        <!-- 要生成的資料表 -->
+		<table tableName="Stock"
+			domainObjectName="Stock" enableCountByExample="false"
+			enableUpdateByExample="false" enableDeleteByExample="false"
+			enableSelectByExample="true" selectByExampleQueryId="false">
+		</table>
+		<table tableName="StockPrice"
+			domainObjectName="StockPrice" enableCountByExample="false"
+			enableUpdateByExample="false" enableDeleteByExample="false"
+			enableSelectByExample="true" selectByExampleQueryId="false">
+		</table>
+	</context>
+</generatorConfiguration>

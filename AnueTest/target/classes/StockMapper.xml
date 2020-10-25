@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anue.mapper.StockMapper">
+  <resultMap id="BaseResultMap" type="com.anue.pojo.Stock">
+    <id column="stockId" jdbcType="INTEGER" property="stockid" />
+    <id column="stockNo" jdbcType="INTEGER" property="stockno" />
+    <result column="stockName" jdbcType="VARCHAR" property="stockname" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    stockId, stockNo, stockName, updateTime, createTime
+  </sql>
+  <select id="selectByExample" parameterType="com.anue.pojo.StockExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from Stock
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="com.anue.pojo.StockKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from Stock
+    where stockId = #{stockid,jdbcType=INTEGER}
+      and stockNo = #{stockno,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.anue.pojo.StockKey">
+    delete from Stock
+    where stockId = #{stockid,jdbcType=INTEGER}
+      and stockNo = #{stockno,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.anue.pojo.Stock" useGeneratedKeys="true">
+    insert into Stock (stockId, stockNo, stockName, 
+      updateTime, createTime)
+    values (#{stockid,jdbcType=INTEGER}, #{stockno,jdbcType=INTEGER}, #{stockname,jdbcType=VARCHAR}, 
+      #{updatetime,jdbcType=TIMESTAMP}, #{createtime,jdbcType=TIMESTAMP})
+    
+    <selectKey resultType="Integer" order="AFTER" keyProperty="stockid">
+        SELECT LAST_INSERT_ID() as stockid
+    </selectKey>
+  </insert>
+  <insert id="insertSelective" parameterType="com.anue.pojo.Stock">
+    insert into Stock
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="stockid != null">
+        stockId,
+      </if>
+      <if test="stockno != null">
+        stockNo,
+      </if>
+      <if test="stockname != null">
+        stockName,
+      </if>
+      <if test="updatetime != null">
+        updateTime,
+      </if>
+      <if test="createtime != null">
+        createTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="stockid != null">
+        #{stockid,jdbcType=INTEGER},
+      </if>
+      <if test="stockno != null">
+        #{stockno,jdbcType=INTEGER},
+      </if>
+      <if test="stockname != null">
+        #{stockname,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.anue.pojo.Stock">
+    update Stock
+    <set>
+      <if test="stockname != null">
+        stockName = #{stockname,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null">
+        updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createtime != null">
+        createTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where stockId = #{stockid,jdbcType=INTEGER}
+      and stockNo = #{stockno,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.anue.pojo.Stock">
+    update Stock
+    set stockName = #{stockname,jdbcType=VARCHAR},
+      updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      createTime = #{createtime,jdbcType=TIMESTAMP}
+    where stockId = #{stockid,jdbcType=INTEGER}
+      and stockNo = #{stockno,jdbcType=INTEGER}
+  </update>
+  
+  <!-- join -->
+  <resultMap type="com.anue.pojo.StockStockPrice" id="stockStockPriceMap">
+  	<id column="stockId" jdbcType="INTEGER" property="stockid" />
+    <id column="stockNo" jdbcType="INTEGER" property="stockno" />
+    <result column="stockName" jdbcType="VARCHAR" property="stockname" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
+    <association property="stockPrice" javaType="com.anue.pojo.StockPrice">
+    	<id column="priceId" jdbcType="INTEGER" property="priceid" />
+	    <id column="fk_stockId" jdbcType="INTEGER" property="fkStockid" />
+	    <result column="transDate" jdbcType="DATE" property="transdate" />
+	    <result column="transTime" jdbcType="TIME" property="transtime" />
+	    <result column="transPrice" jdbcType="INTEGER" property="transprice" />
+	    <result column="transQuantity" jdbcType="INTEGER" property="transquantity" />
+	    <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
+	    <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
+    </association>
+  </resultMap>
+  <select id="selectStockStockPrice" parameterType="com.anue.pojo.StockStockPrice" resultMap="stockStockPriceMap">
+  	SELECT S.*,P.* FROM Stock S,StockPrice P 
+	WHERE S.stockId=P.fk_stockId
+	<if test="stockid != null and stockid != '' ">
+		AND S.stockId=#{stockid}
+	</if>
+	<if test="stockname != null and stockname != '' ">
+		AND S.stockName LIKE #{stockname}
+	</if>
+	<if test="stockPrice.transdate != null ">
+		AND P.transDate= #{stockPrice.transdate}
+	</if>
+	<if test="transTimeBegin != null ">
+		AND P.transTime &gt;= #{transTimeBegin}
+	</if>
+	<if test="transTimeEnd != null ">
+		AND P.TRANStIME &lt;= #{transTimeEnd}
+	</if>
+  </select>
+</mapper>
